@@ -1,9 +1,5 @@
 #!/bin/bash 
 
-echo "-----------------------------------------------"
-echo " Get a Box.com token "
-echo "-----------------------------------------------"
-
 # Initalize variables from .env file
 CLIENT_ID=$(grep CLIENT_ID .env | cut -d '=' -f2)
 CLIENT_SECRET=$(grep CLIENT_SECRET .env | cut -d '=' -f2)
@@ -13,6 +9,10 @@ PROJECTS_ROOT=$(grep PROJECTS_ROOT .env | cut -d '=' -f2)
 DOCROOT=$(grep DOCROOT .env | cut -d '=' -f2)
 EXPORT_DIR=$(grep EXPORT_DIR .env | cut -d '=' -f2)
 
+echo "-----------------------------------------------"
+echo " Get a Box.com token "
+echo "-----------------------------------------------"
+
 # Get Box.com access token.
 ACCESS_TOKEN=$( curl --location --request POST 'https://api.box.com/oauth2/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode "client_id=$CLIENT_ID" --data-urlencode "client_secret=$CLIENT_SECRET" --data-urlencode 'grant_type=client_credentials' --data-urlencode 'box_subject_type=enterprise' --data-urlencode "box_subject_id=$SUBJECT_ID" | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["access_token"]' )
 
@@ -21,7 +21,7 @@ cd $PROJECTS_ROOT
 
 # Iterate over all projects in the main directory.
 for dir in */ ; do
-# Set the project name with a leading slash.
+# Set the project name without a leading slash.
 PROJECT_NAME=${dir%*/}
 # Build a project root path.
 PROJECT_ROOT="$PROJECTS_ROOT/$PROJECT_NAME/$DOCROOT"
